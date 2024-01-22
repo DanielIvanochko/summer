@@ -18,7 +18,10 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.30'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
     // https://mvnrepository.com/artifact/org.reflections/reflections
-    implementation group: 'org.reflections', name: 'reflections', version: '0.9.5-RC2'
+    implementation group: 'org.reflections', name: 'reflections', version: '0.10.2'
+    // https://mvnrepository.com/artifact/log4j/log4j
+    implementation group: 'log4j', name: 'log4j', version: '1.2.16'
+
 }
 
 test {
