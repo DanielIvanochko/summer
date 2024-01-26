@@ -1,10 +1,14 @@
 package summer.core.context.factory;
 
+import summer.core.context.annotation.PreDestroy;
+import summer.core.context.exception.NoSuchBeanException;
+import summer.core.context.exception.PreDestroyException;
 import summer.core.domain.BeanDeclaration;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import summer.core.utils.ReflectionsHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +24,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Getter
-public class DefaultBringBeanFactory {
+public class DefaultBeanFactory implements BeanFactory {
 
   private final Map<String, BeanDeclaration> beanDeclarationsMap = new ConcurrentHashMap<>();
 
@@ -47,11 +51,10 @@ public class DefaultBringBeanFactory {
     return beans.values().stream()
           .findFirst()
           .orElseThrow(() -> {
-            /*if (type.isInterface()) {
+            if (type.isInterface()) {
               return new NoSuchBeanException(String.format("No such bean that implements this %s ", type));
             }
-            return new NoSuchBeanException(type);*/
-            return new RuntimeException("dawdadw");
+            return new NoSuchBeanException(type.getSimpleName());
           });
   }
 
@@ -59,10 +62,9 @@ public class DefaultBringBeanFactory {
     Object bean = Optional.ofNullable(getBeanByName(name))
           .orElseThrow(() -> {
             if (type.isInterface()) {
-//              return new NoSuchBeanException(String.format("No such bean that implements this %s ", type));
+              return new NoSuchBeanException(String.format("No such bean that implements this %s ", type));
             }
-//            return new NoSuchBeanException(type);
-            return new RuntimeException("dwadawda");
+            return new NoSuchBeanException(type.getSimpleName());
           });
 
     return type.cast(bean);
@@ -92,21 +94,21 @@ public class DefaultBringBeanFactory {
 
 
   public void close() {
-    /*for (var bean : singletonObjects.values()) {
+    for (var bean : singletonObjects.values()) {
       var declaredMethods = bean.getClass().getMethods();
       try {
-        ReflectionUtils.processBeanPostProcessorAnnotation(bean, declaredMethods, PreDestroy.class);
+        ReflectionsHelper.processBeanPostProcessorAnnotation(bean, declaredMethods, PreDestroy.class);
       } catch (Exception e) {
-        throw new PreDestroyException(e);
+        throw new PreDestroyException(e.getMessage());
       }
-    }*/
+    }
   }
 
-  void addSingletonBean(String beanName, Object bean) {
+  public void addSingletonBean(String beanName, Object bean) {
     singletonObjects.put(beanName, bean);
   }
 
-  void addPrototypeBean(String beanName, Supplier<Object> supplier) {
+  public void addPrototypeBean(String beanName, Supplier<Object> supplier) {
     prototypeSuppliers.put(beanName, supplier);
   }
 
@@ -125,7 +127,7 @@ public class DefaultBringBeanFactory {
    * @param beanName The name of the bean for which the definition is requested.
    * @return The BeanDefinition object associated with the provided bean name.
    */
-  public BeanDeclaration getBeanDefinitionByName(String beanName) {
+  public BeanDeclaration getBeanDeclarationByName(String beanName) {
     return this.beanDeclarationsMap.get(beanName);
   }
 
@@ -151,7 +153,7 @@ public class DefaultBringBeanFactory {
   private <T> T getPrimary (Map<String, T> beans, Class<T> type) {
     List <T> foundBeans = beans.entrySet()
           .stream()
-          .filter(entry -> getBeanDefinitionByName(entry.getKey()).isPrimary())
+          .filter(entry -> getBeanDeclarationByName(entry.getKey()).isPrimary())
           .map(Entry::getValue)
           .toList();
     if (foundBeans.size() != 1) {

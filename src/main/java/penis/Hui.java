@@ -3,6 +3,5 @@ package penis;
 import summer.core.context.annotation.Service;
 
 @Service
-public class Vasya {
-
+public class Hui {
 }
