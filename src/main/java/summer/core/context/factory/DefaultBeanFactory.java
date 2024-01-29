@@ -2,6 +2,7 @@ package summer.core.context.factory;
 
 import summer.core.context.annotation.PreDestroy;
 import summer.core.context.exception.NoSuchBeanException;
+import summer.core.context.exception.NoUniqueBeanException;
 import summer.core.context.exception.PreDestroyException;
 import summer.core.domain.BeanDeclaration;
 
@@ -10,12 +11,8 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import summer.core.utils.ReflectionsHelper;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -35,7 +32,8 @@ public class DefaultBeanFactory implements BeanFactory {
   private final Map<String, Supplier<Object>> prototypeSuppliers = new ConcurrentHashMap<>();
 
   @Setter
-  private Map<String, String> properties = new ConcurrentHashMap<>();
+  @Getter
+  private Properties properties;
 
   @Setter
   private String profileName;
@@ -157,8 +155,7 @@ public class DefaultBeanFactory implements BeanFactory {
           .map(Entry::getValue)
           .toList();
     if (foundBeans.size() != 1) {
-      throw new RuntimeException("type gimno");
-//      throw new NoUniqueBeanException(type);
+      throw new NoUniqueBeanException(type.getSimpleName());
     } else {
       return foundBeans.get(0);
     }

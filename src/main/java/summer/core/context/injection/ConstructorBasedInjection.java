@@ -8,11 +8,13 @@ import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import summer.core.context.AnnotationBeanRegistry;
 import summer.core.context.annotation.Autowired;
+import summer.core.context.annotation.Value;
 import summer.core.context.exception.NoAutowiredConstructorException;
 import summer.core.context.exception.NoSuchBeanException;
 import summer.core.context.exception.NoUniqueBeanException;
 import summer.core.domain.BeanDeclaration;
 import summer.core.utils.ReflectionsHelper;
+import summer.core.utils.ValuePropertiesResolver;
 
 @RequiredArgsConstructor
 public class ConstructorBasedInjection {
@@ -31,6 +33,12 @@ public class ConstructorBasedInjection {
 
     for (int i = 0; i < parameters.length; i++) {
       Parameter parameter = parameters[i];
+
+      if (parameter.isAnnotationPresent(Value.class)) {
+        dependencies[i] = ValuePropertiesResolver.resolveValueForParameter(parameter, parameter.getAnnotation(Value.class), beanRegistry.getProperties());
+        continue;
+      }
+
       String parameterName = parameterNames.get(i);
 
       String dependencyBeanName = findBeanNameForArgumentInConstructor(parameter, parameterName);

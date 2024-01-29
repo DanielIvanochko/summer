@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import summer.core.context.AnnotationBeanRegistry;
 import summer.core.context.ClassPathScannerFactory;
 import summer.core.context.annotation.Autowired;
+import summer.core.context.annotation.Value;
 import summer.core.context.exception.NoSuchBeanException;
 import summer.core.context.exception.SummerException;
+import summer.core.utils.ValuePropertiesResolver;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 @RequiredArgsConstructor
 public class SetterBasedInjection {
@@ -21,6 +24,12 @@ public class SetterBasedInjection {
     for (Method method : methods) {
       if (method.isAnnotationPresent(Autowired.class)) {
         Class<?> parameterType = method.getParameterTypes()[0];
+        Parameter parameter = method.getParameters()[0];
+        if (parameter.isAnnotationPresent(Value.class)) {
+          Object dependency = ValuePropertiesResolver.resolveValueForParameter(parameter, parameter.getAnnotation(Value.class), beanRegistry.getProperties());
+          injectDependencyInMethod(method, bean, dependency);
+          continue;
+        }
 
         String dependencyName = classPathScannerFactory.resolveBeanName(parameterType);
 
