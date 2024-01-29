@@ -2,6 +2,7 @@ package summer.core.context;
 
 import org.reflections.Reflections;
 import summer.core.context.annotation.Primary;
+import summer.core.context.processor.BeanDeclarationPostProcessorFactory;
 import summer.core.context.processor.BeanPostProcessor;
 import summer.core.context.processor.BeanPostProcessorFactory;
 import summer.core.domain.BeanDeclaration;
@@ -16,19 +17,29 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SummerApplicationContext extends AnnotationBeanRegistry {
+  private final BeanDeclarationPostProcessorFactory beanDeclarationPostProcessorFactory;
 
   public SummerApplicationContext(String... basePackage) {
     //scan the packages in search of annotations
     super(new Reflections(basePackage));
+    beanDeclarationPostProcessorFactory = new BeanDeclarationPostProcessorFactory(getReflections());
+
     Set<Class<?>> beanClasses = classPathScannerFactory.getBeansToCreate();
 
     register(beanClasses);
+
+    invokeBeanFactoryPostProcessors();
 
     //instantiate beans
     instantiateBeans();
 
     //post process beans
     invokePostProcessors();
+  }
+
+  private void invokeBeanFactoryPostProcessors() {
+    beanDeclarationPostProcessorFactory.getBeanFactoryPostProcessors()
+        .forEach(beanFactoryPostProcessor -> beanFactoryPostProcessor.postProcessBeanFactory(this));
   }
 
   private void invokePostProcessors() {

@@ -25,6 +25,9 @@ public class BeanDeclaration {
     return scope == BeanScope.PROTOTYPE;
   }
 
+  public boolean isConfigurationBean() {
+    return type == BeanType.CONFIGURATION;
+  }
   public boolean isConfiguration() {
     return Objects.nonNull(method);
   }

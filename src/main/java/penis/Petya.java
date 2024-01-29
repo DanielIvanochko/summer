@@ -5,12 +5,12 @@ import summer.core.context.annotation.Component;
 
 @Component
 public class Petya {
-  @Autowired
-  private Vasya vasya;
-  private Hui hui;
+  private final Vasya vasya;
+  private final Hui hui;
 
   @Autowired
-  public void setHui(Hui hui) {
+  public Petya(Vasya vasya, Hui hui) {
+    this.vasya = vasya;
     this.hui = hui;
   }
 }

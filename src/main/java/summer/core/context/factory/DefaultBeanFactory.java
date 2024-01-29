@@ -136,7 +136,7 @@ public class DefaultBeanFactory implements BeanFactory {
    *
    * @return A list containing the names of all registered bean definitions.
    */
-  public List<String> getAllBeanDefinitionNames() {
+  public List<String> getAllBeanDeclarationNames() {
     return this.beanDeclarationsMap.keySet().stream().toList();
   }
 
