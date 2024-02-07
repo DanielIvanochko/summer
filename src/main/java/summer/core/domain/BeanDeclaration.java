@@ -26,9 +26,9 @@ public class BeanDeclaration {
   }
 
   public boolean isConfigurationBean() {
-    return type == BeanType.CONFIGURATION;
+    return Objects.nonNull(method);
   }
   public boolean isConfiguration() {
-    return Objects.nonNull(method);
+    return type == BeanType.CONFIGURATION;
   }
 }

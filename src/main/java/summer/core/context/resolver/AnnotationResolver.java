@@ -1,4 +1,4 @@
-package summer.core.context.resolvers;
+package summer.core.context.resolver;
 
 public interface AnnotationResolver {
   boolean isSupported(Class<?> clazz);

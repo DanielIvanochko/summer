@@ -3,8 +3,9 @@ package summer.core.context.processor;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import org.reflections.Reflections;
-import summer.core.context.annotation.BeanProcessor;
+
 import summer.core.utils.ReflectionsHelper;
+import summer.core.context.annotation.BeanProcessor;
 
 import java.util.List;
 import java.util.stream.Collectors;

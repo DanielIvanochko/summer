@@ -1,2 +1,3 @@
 rootProject.name = 'summer'
+include 'core'
 

@@ -1,7 +1,8 @@
 package summer.core.context;
 
 import org.reflections.Reflections;
-import summer.core.context.resolvers.AnnotationResolver;
+
+import summer.core.context.resolver.AnnotationResolver;
 import summer.core.context.scanner.ClassPathScanner;
 import summer.core.utils.ReflectionsHelper;
 
@@ -10,10 +11,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+
 public class ClassPathScannerFactory {
   private final Reflections reflections;
   private final List<ClassPathScanner> classPathScanners;
   private final List<AnnotationResolver> annotationResolvers;
+  @Getter
   private final List<Class<? extends Annotation>> createdAnnotations;
 
   public ClassPathScannerFactory(Reflections reflections) {

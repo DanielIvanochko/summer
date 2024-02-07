@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public class ValuePropertiesResolver {
   private static final Pattern VALUE_PROPERTY_PATTERN = Pattern.compile("\\$\\{([^}]+)\\}");
-
+  private static final String DEFAULT_VALUE_SEPARATOR = ":";
   public static Object resolveValueForParameter(Parameter parameter, Value valueAnnotation, Properties properties) {
     return resolveValueProperty(parameter.getType(), valueAnnotation, properties);
   }
@@ -29,8 +29,12 @@ public class ValuePropertiesResolver {
     if (matcher.find()) {
       String key = matcher.group(1);
       String propertyValue = properties.getProperty(key);
-
-      checkProperty(key, propertyValue);
+      if (containsDefaultValue(key) && propertyValue == null) {
+        String resolvedProperty = resolveDefaultValue(key);
+        properties.put(key, resolvedProperty);
+      } else {
+        checkProperty(key, propertyValue);
+      }
 
       return cast(properties.get(key), type);
     } else {
@@ -38,7 +42,18 @@ public class ValuePropertiesResolver {
     }
   }
 
+  private static String resolveDefaultValue(String key) {
+    String[] separatedValues = key.split(DEFAULT_VALUE_SEPARATOR);
+    if(separatedValues.length > 1) {
+      return separatedValues[1];
+    } else {
+      return "";
+    }
+  }
 
+  private static boolean containsDefaultValue(String key) {
+    return key.contains(DEFAULT_VALUE_SEPARATOR);
+  }
 
   private static void checkProperty(String key, String propertyValue) {
     if (propertyValue == null) {

@@ -1,17 +1,22 @@
 package summer.core.utils;
 
-import summer.core.context.annotation.PostConstruct;
 import summer.core.context.exception.SummerException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import lombok.SneakyThrows;
+
+import org.reflections.Reflections;
 
 public class ReflectionsHelper {
   public static Object createObjectWithOneParameter(Class<?> clazz, Class<?> parameterType, Object parameter) {
@@ -65,5 +70,42 @@ public class ReflectionsHelper {
         method.invoke(bean);
       }
     }
+  }
+
+  public static List<String> getParameterNames(Method method) {
+    return Arrays.stream(method.getParameters())
+          .map(parameter -> parameter.getClass().getSimpleName())
+          .map(ReflectionsHelper::getSimpleClassName)
+          .collect(Collectors.toList());
+  }
+
+  public static Supplier<Object> invokeBeanMethod(Method method, Object configBean, Object[] parameters) {
+    return () -> {
+      try {
+        return method.invoke(configBean, parameters);
+      } catch (Exception e) {
+        throw new SummerException(e.getMessage());
+      }
+    };
+  }
+
+  @SneakyThrows
+  public static List<Class<?>> extractImplClasses(ParameterizedType genericTypeOfField, Reflections reflections, List<Class<? extends Annotation>> createdAnnotations) {
+    Type actualType = genericTypeOfField.getActualTypeArguments()[0];
+    if (actualType instanceof Class actualTypeArgument) {
+      String name = actualTypeArgument.getName();
+      Class<?> interfaceClass = Class.forName(name);
+      return reflections.getSubTypesOf(interfaceClass)
+            .stream()
+            .filter(impl -> isAnnotationPresentOnImpl(impl, createdAnnotations))
+            .collect(Collectors.toList());
+    }
+    return Collections.emptyList();
+  }
+
+  private static boolean isAnnotationPresentOnImpl(Class<?> impl, List<Class<? extends Annotation>> createdAnnotations) {
+    return Arrays.stream(impl.getAnnotations())
+          .map(Annotation::annotationType)
+          .anyMatch(createdAnnotations::contains);
   }
 }

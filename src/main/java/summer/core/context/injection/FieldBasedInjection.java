@@ -1,14 +1,15 @@
 package summer.core.context.injection;
 
 import lombok.RequiredArgsConstructor;
+
 import summer.core.context.AnnotationBeanRegistry;
 import summer.core.context.ClassPathScannerFactory;
 import summer.core.context.annotation.Autowired;
 import summer.core.context.annotation.Value;
-import summer.core.context.exception.NoSuchBeanException;
-import summer.core.context.exception.SummerException;
 import summer.core.utils.ReflectionsHelper;
 import summer.core.utils.ValuePropertiesResolver;
+import summer.core.context.exception.NoSuchBeanException;
+import summer.core.context.exception.SummerException;
 
 import java.lang.reflect.Field;
 

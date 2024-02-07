@@ -1,4 +1,4 @@
-package summer.core.context.resolvers;
+package summer.core.context.resolver;
 
 import summer.core.context.annotation.Component;
 import summer.core.context.annotation.Qualifier;

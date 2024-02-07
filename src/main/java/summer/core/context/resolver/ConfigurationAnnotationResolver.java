@@ -1,9 +1,6 @@
-package summer.core.context.resolvers;
+package summer.core.context.resolver;
 
-import summer.core.context.annotation.Component;
 import summer.core.context.annotation.Configuration;
-import summer.core.context.annotation.Qualifier;
-import summer.core.context.annotation.Service;
 
 public class ConfigurationAnnotationResolver implements AnnotationResolver {
   @Override

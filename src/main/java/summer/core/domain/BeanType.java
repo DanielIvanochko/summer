@@ -1,11 +1,11 @@
 package summer.core.domain;
 
-import lombok.Data;
 import lombok.Getter;
-import summer.core.context.annotation.Bean;
+
 import summer.core.context.annotation.Component;
 import summer.core.context.annotation.Configuration;
 import summer.core.context.annotation.Service;
+import summer.core.context.annotation.Bean;
 import summer.core.utils.Pair;
 
 import java.lang.annotation.Annotation;

@@ -1,12 +1,12 @@
 package summer.core.context.processor;
 
-import summer.core.context.annotation.Bean;
 import summer.core.context.annotation.Primary;
-import summer.core.context.exception.NoUniqueBeanException;
 import summer.core.context.factory.DefaultBeanFactory;
 import summer.core.domain.BeanDeclaration;
 import summer.core.domain.BeanType;
 import summer.core.utils.BeanUtils;
+import summer.core.context.annotation.Bean;
+import summer.core.context.exception.NoUniqueBeanException;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -24,7 +24,7 @@ public class ConfigurationBeanFactoryPostProcessor implements BeanFactoryPostPro
   private void postProcessConfigurationBean(DefaultBeanFactory defaultBeanFactory, String beanName) {
     BeanDeclaration beanDeclaration = defaultBeanFactory.getBeanDeclarationByName(beanName);
 
-    if (beanDeclaration.isConfigurationBean()) {
+    if (beanDeclaration.isConfiguration()) {
       List<Method> annotatedMethods = getAnnotatedMethods(beanDeclaration.getBeanClass().getDeclaredMethods());
       for (Method method : annotatedMethods) {
         addBeanDeclarationForBean(method, defaultBeanFactory, beanName);

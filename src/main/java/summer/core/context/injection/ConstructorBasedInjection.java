@@ -2,17 +2,25 @@ package summer.core.context.injection;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import lombok.RequiredArgsConstructor;
-import summer.core.context.AnnotationBeanRegistry;
+
 import summer.core.context.annotation.Autowired;
-import summer.core.context.annotation.Value;
 import summer.core.context.exception.NoAutowiredConstructorException;
+import summer.core.context.AnnotationBeanRegistry;
+import summer.core.context.annotation.Value;
 import summer.core.context.exception.NoSuchBeanException;
 import summer.core.context.exception.NoUniqueBeanException;
 import summer.core.domain.BeanDeclaration;
+import summer.core.utils.ListParameterResolver;
 import summer.core.utils.ReflectionsHelper;
 import summer.core.utils.ValuePropertiesResolver;
 
@@ -36,6 +44,9 @@ public class ConstructorBasedInjection {
 
       if (parameter.isAnnotationPresent(Value.class)) {
         dependencies[i] = ValuePropertiesResolver.resolveValueForParameter(parameter, parameter.getAnnotation(Value.class), beanRegistry.getProperties());
+        continue;
+      } else if (List.class.isAssignableFrom(parameter.getType())) {
+        dependencies[i] = ListParameterResolver.getListParameter(beanRegistry, parameter);
         continue;
       }
 
