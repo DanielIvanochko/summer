@@ -25,9 +25,24 @@ dependencies {
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.16.1'
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310
     implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: '2.16.1'
-    // https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-catalina
-    implementation group: 'org.apache.tomcat', name: 'tomcat-catalina', version: '10.1.18'
+    /*// https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-catalina
+    implementation group: 'org.apache.tomcat', name: 'tomcat-catalina', version: '10.1.18'*/
+    // https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api
+    compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.0.0'
+    // https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-jasper
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-jasper', version: '10.1.18'
+    // https://mvnrepository.com/artifact/jakarta.annotation/jakarta.annotation-api
+    implementation group: 'jakarta.annotation', name: 'jakarta.annotation-api', version: '2.1.1'
 
+    // https://mvnrepository.com/artifact/org.apache.tomcat.embed/tomcat-embed-el
+    implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-el', version: '10.1.18'
+    implementation (group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '10.1.18') {
+        exclude group: 'org.apache.tomcat', module: 'tomcat.annotations-api'
+    }
+
+    implementation (group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.1.18') {
+        exclude group: 'org.apache.tomcat', module: 'tomcat.annotations-api'
+    }
 }
 
 test {

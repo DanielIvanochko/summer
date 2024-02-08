@@ -12,7 +12,7 @@ public class SummerWebApplication {
     SummerApplicationContext context = new SummerApplicationContext(packages);
 
     WebStarter webStarter = context.getBean(WebStarter.class);
-   // webStarter.run(context);
+    webStarter.run(context);
 
     return context;
   }

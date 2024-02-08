@@ -9,9 +9,11 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.LifecycleState;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.startup.Tomcat;
 
+import summer.core.context.exception.SummerException;
 import summer.web.server.exception.WebServerException;
 
 @Log4j
@@ -28,11 +30,25 @@ public class TomcatWebServer implements WebServer {
     try {
       tomcat.start();
       startDaemonThread();
-      log.info("Tomcat has started on port(s): " + getPortsDescription(true));
+      checkThatConnectorsHaveStarted();
+      System.out.println("Tomcat has started on port(s): " + getPortsDescription(true));
     } catch (LifecycleException e) {
       stopSilently();
       destroySilently();
       throw new WebServerException("Can't start tomcat web server: " + e.getMessage());
+    }
+  }
+
+  private void checkThatConnectorsHaveStarted() {
+    checkConnectorHasStarted(this.tomcat.getConnector());
+    for (Connector connector : this.tomcat.getService().findConnectors()) {
+      checkConnectorHasStarted(connector);
+    }
+  }
+
+  private void checkConnectorHasStarted(Connector connector) {
+    if (LifecycleState.FAILED.equals(connector.getState())) {
+      throw new SummerException("Cannot start tomcat");
     }
   }
 

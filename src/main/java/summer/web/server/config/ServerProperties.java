@@ -8,7 +8,7 @@ import summer.core.context.annotation.Value;
 @Data
 @Component
 public class ServerProperties {
-  @Value("${server.port:8080}")
+  @Value("${server.port:9000}")
   private int port;
   @Value("${server.contextPath:}")
   private String contextPath;
