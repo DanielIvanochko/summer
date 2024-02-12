@@ -19,6 +19,7 @@ import lombok.SneakyThrows;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import summer.core.context.annotation.Autowired;
 import summer.core.context.annotation.Component;
 import summer.core.context.exception.SummerException;
@@ -37,6 +38,7 @@ import summer.web.servlet.mapping.RestControllerParams;
 import summer.web.servlet.mapping.RestControllerProcessResult;
 
 @Component
+@Slf4j
 public class DispatcherServlet extends FrameworkServlet {
 
   private static final String REST_CONTROLLER_PARAMS = "REST_CONTROLLER_PARAMS";
@@ -49,6 +51,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
   @Override
   public void processRequest(HttpServletRequest req, HttpServletResponse resp) {
+    log.info("Got a {} request by path: {}", req.getMethod(), req.getRequestURI());
     RestControllerParams restControllerParams = getRestControllerParams(req);
     processRestControllerRequest(restControllerParams, req, resp);
   }

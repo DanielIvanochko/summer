@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import lombok.extern.log4j.Log4j;
 
+import lombok.extern.slf4j.Slf4j;
 import summer.core.context.exception.NoSuchBeanException;
 import summer.core.context.injection.ConstructorBasedInjection;
 import summer.core.context.injection.FieldBasedInjection;
@@ -14,7 +14,7 @@ import summer.core.context.injection.SetterBasedInjection;
 import summer.core.domain.BeanDeclaration;
 import summer.core.utils.ReflectionsHelper;
 
-@Log4j
+@Slf4j
 public class BeanCreator {
   private final AnnotationBeanRegistry beanRegistry;
   private final ConstructorBasedInjection constructorBasedInjection;

@@ -6,8 +6,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import lombok.extern.log4j.Log4j;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.connector.Connector;
@@ -16,7 +16,7 @@ import org.apache.catalina.startup.Tomcat;
 import summer.core.context.exception.SummerException;
 import summer.web.server.exception.WebServerException;
 
-@Log4j
+@Slf4j
 public class TomcatWebServer implements WebServer {
   @Getter
   private final Tomcat tomcat;
@@ -31,7 +31,7 @@ public class TomcatWebServer implements WebServer {
       tomcat.start();
       startDaemonThread();
       checkThatConnectorsHaveStarted();
-      System.out.println("Tomcat has started on port(s): " + getPortsDescription(true));
+      log.info("Tomcat has started on port(s): " + getPortsDescription(true));
     } catch (LifecycleException e) {
       stopSilently();
       destroySilently();
