@@ -11,9 +11,9 @@ repositories {
     mavenCentral()
 }
 
-jitpack {
-    jdk {
-        version = 'openjdk19'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(19)
     }
 }
 
