@@ -30,25 +30,34 @@ public class ValuePropertiesResolver {
       String key = matcher.group(1);
       String propertyValue = properties.getProperty(key);
       if (containsDefaultValue(key) && propertyValue == null) {
-        String resolvedProperty = resolveDefaultValue(key);
-        properties.put(key, resolvedProperty);
+        String defaultValue = resolveDefaultValue(key);
+        key = extractKeyFromKeyWithDefaultValue(key);
+        updatePropertiesWithDefaultValueIfKeyNotFound(key, defaultValue, properties);
       } else {
         checkProperty(key, propertyValue);
       }
-
       return cast(properties.get(key), type);
-    } else {
-      return cast(value, type);
     }
+    return cast(value, type);
   }
 
   private static String resolveDefaultValue(String key) {
     String[] separatedValues = key.split(DEFAULT_VALUE_SEPARATOR);
-    if(separatedValues.length > 1) {
+    if (separatedValues.length > 1) {
       return separatedValues[1];
     } else {
       return "";
     }
+  }
+
+  private static void updatePropertiesWithDefaultValueIfKeyNotFound(String key, String defaultValue, Properties properties) {
+    if (!properties.containsKey(key)) {
+      properties.put(key, defaultValue);
+    }
+  }
+
+  private static String extractKeyFromKeyWithDefaultValue(String key) {
+    return key.split(DEFAULT_VALUE_SEPARATOR)[0];
   }
 
   private static boolean containsDefaultValue(String key) {
