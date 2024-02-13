@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'maven-publish'
 }
 
 group = 'org.example'
@@ -43,6 +44,21 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:2.0.9'
     implementation 'org.slf4j:slf4j-simple:2.0.9'
 
+}
+
+publishing {
+    publications {
+        customLibrary(MavenPublication) {
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'summer-local-repo'
+            url = layout.buildDirectory.dir("repo")
+        }
+    }
 }
 
 test {
