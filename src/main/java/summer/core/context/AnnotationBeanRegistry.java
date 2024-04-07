@@ -45,6 +45,8 @@ public class AnnotationBeanRegistry extends DefaultBeanFactory implements BeanDe
       return;
     }
 
+    currentlyCreatingBeans.add(beanName);
+
     if (beanDeclaration.isConfigurationBean()) {
       beanCreator.createConfigurationBean(beanName, beanDeclaration);
     } else {

@@ -14,27 +14,24 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 
 public class ClassPathScannerFactory {
-  private final Reflections reflections;
   private final List<ClassPathScanner> classPathScanners;
   private final List<AnnotationResolver> annotationResolvers;
   @Getter
   private final List<Class<? extends Annotation>> createdAnnotations;
 
   public ClassPathScannerFactory(Reflections reflections) {
-    this.reflections = reflections;
-
     this.classPathScanners = reflections.getSubTypesOf(ClassPathScanner.class)
         .stream()
         .map(clazz -> clazz.cast(ReflectionsHelper.createObjectWithOneParameter(clazz, Reflections.class, reflections)))
         .collect(Collectors.toList());
 
+    this.createdAnnotations = classPathScanners.stream()
+        .map(ClassPathScanner::getSupportedAnnotation)
+        .collect(Collectors.toList());
+
     this.annotationResolvers = reflections.getSubTypesOf(AnnotationResolver.class)
         .stream()
         .map(clazz -> clazz.cast(ReflectionsHelper.createObjectWithoutParameters(clazz)))
-        .collect(Collectors.toList());
-
-    this.createdAnnotations = classPathScanners.stream()
-        .map(ClassPathScanner::getSupportedAnnotation)
         .collect(Collectors.toList());
   }
 

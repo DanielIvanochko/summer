@@ -85,7 +85,8 @@ public class TomcatWebServer implements WebServer {
   public void stop() {
     try {
       this.tomcat.stop();
-    } catch (LifecycleException e) {
+      this.tomcat.destroy();
+    } catch (Exception e) {
       throw new WebServerException("Can't stop Tomcat: " + e.getMessage());
     }
   }

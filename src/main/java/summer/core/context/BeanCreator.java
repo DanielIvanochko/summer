@@ -44,7 +44,7 @@ public class BeanCreator {
   public Object createConfigurationBean(String beanName, BeanDeclaration beanDeclaration) {
     Object configBean = Optional.ofNullable(beanRegistry.getSingletonObjects().get(beanDeclaration.getFactoryBeanName()))
           .orElseThrow(() -> new NoSuchBeanException("Cannot find configuration bean to instantiate bean with name : " + beanName));
-    List<String> methodParameterNames = ReflectionsHelper.getParameterNames(beanDeclaration.getMethod());
+    List<String> methodParameterNames = ReflectionsHelper.getParameterClassNames(beanDeclaration.getMethod());
     List<Object> methodBeans = new ArrayList<>();
 
     methodParameterNames.forEach(parameter -> addBeanToMethodBeans(parameter, methodBeans));

@@ -52,7 +52,7 @@ public class JsonExceptionHandler extends ErrorReportValve {
   }
 
   private Throwable getCause(Throwable throwable) {
-    return Optional.of(throwable.getCause()).orElse(throwable);
+    return Optional.ofNullable(throwable.getCause()).orElse(throwable);
   }
 
 }

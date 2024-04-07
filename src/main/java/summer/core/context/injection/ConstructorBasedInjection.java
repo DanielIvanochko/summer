@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 
 import summer.core.context.annotation.Autowired;
+import summer.core.context.annotation.Qualifier;
 import summer.core.context.exception.NoAutowiredConstructorException;
 import summer.core.context.AnnotationBeanRegistry;
 import summer.core.context.annotation.Value;
@@ -94,7 +95,6 @@ public class ConstructorBasedInjection {
 
   private String findBeanNameBasedOnPriority(List<String> beanNames, String parameterName, Parameter parameter) {
     Class<?> parameterType = parameter.getType();
-
     List<String> primaryNames = beanNames.stream()
         .filter(name -> beanRegistry.getBeanDeclarationByName(name).isPrimary())
         .toList();
@@ -104,10 +104,20 @@ public class ConstructorBasedInjection {
     } else if (primaryNames.size() > 1) {
       throw new NoUniqueBeanException("No unique bean for " + parameterType.getSimpleName());
     }
+
+    String currentParameterName = getParameterNameIfAnnotated(parameter, parameterName);
+
     return beanNames.stream()
-        .filter(name -> name.equalsIgnoreCase(parameterName))
+        .filter(name -> name.equalsIgnoreCase(currentParameterName))
         .findFirst()
-        .orElseThrow(() -> new NoSuchBeanException("No such bean for parameter" + parameterName));
+        .orElseThrow(() -> new NoSuchBeanException("No such bean for parameter " + currentParameterName));
+  }
+
+  private String getParameterNameIfAnnotated(Parameter parameter, String parameterName) {
+    if (parameter.isAnnotationPresent(Qualifier.class)) {
+      return parameter.getAnnotation(Qualifier.class).value();
+    }
+    return parameterName;
   }
 
   private void checkIfTheDependencyFound(List<String> beanNames, Class<?> clazz) {

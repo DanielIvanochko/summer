@@ -119,31 +119,14 @@ public class DefaultBeanFactory implements BeanFactory {
     typeToBeanNames.put(beanDefinition.getBeanClass(), beanNames);
   }
 
-  /**
-   * Retrieves the bean definition associated with the given bean name.
-   *
-   * @param beanName The name of the bean for which the definition is requested.
-   * @return The BeanDefinition object associated with the provided bean name.
-   */
   public BeanDeclaration getBeanDeclarationByName(String beanName) {
     return this.beanDeclarationsMap.get(beanName);
   }
 
-  /**
-   * Retrieves a list containing names of all registered bean definitions in the factory.
-   *
-   * @return A list containing the names of all registered bean definitions.
-   */
   public List<String> getAllBeanDeclarationNames() {
     return this.beanDeclarationsMap.keySet().stream().toList();
   }
 
-  /**
-   * Checks if a bean with the specified name has been created.
-   *
-   * @param beanName The name of the bean to check.
-   * @return true if the bean has been created, false otherwise.
-   */
   public boolean isBeanCreated(String beanName) {
     return singletonObjects.containsKey(beanName) || prototypeSuppliers.containsKey(beanName);
   }

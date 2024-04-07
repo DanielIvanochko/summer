@@ -1,5 +1,9 @@
 package summer.core.utils;
 
+import com.thoughtworks.paranamer.AnnotationParanamer;
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import com.thoughtworks.paranamer.CachingParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 import summer.core.context.exception.SummerException;
 
 import java.lang.annotation.Annotation;
@@ -19,6 +23,7 @@ import lombok.SneakyThrows;
 import org.reflections.Reflections;
 
 public class ReflectionsHelper {
+  private static final Paranamer paranamer = new CachingParanamer(new AnnotationParanamer(new BytecodeReadingParanamer()));
   public static Object createObjectWithOneParameter(Class<?> clazz, Class<?> parameterType, Object parameter) {
     try {
       return clazz.getConstructor(parameterType).newInstance(parameter);
@@ -72,11 +77,15 @@ public class ReflectionsHelper {
     }
   }
 
-  public static List<String> getParameterNames(Method method) {
+  public static List<String> getParameterClassNames(Method method) {
     return Arrays.stream(method.getParameters())
           .map(parameter -> parameter.getClass().getSimpleName())
           .map(ReflectionsHelper::getSimpleClassName)
           .collect(Collectors.toList());
+  }
+
+  public static List<String> getParameterNames(Method method) {
+    return Arrays.asList(paranamer.lookupParameterNames(method));
   }
 
   public static Supplier<Object> invokeBeanMethod(Method method, Object configBean, Object[] parameters) {
